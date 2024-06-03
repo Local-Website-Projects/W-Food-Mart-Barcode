@@ -1,0 +1,18 @@
+RewriteEngine on
+
+RewriteRule ^Home index.php [NE,L]
+RewriteRule ^Login login.php [NE,L]
+RewriteRule ^Logout logout.php [NE,L]
+RewriteRule ^Insert insert.php [NE,L]
+RewriteRule ^Update update.php [NE,L]
+RewriteRule ^Employee employee.php [NE,L]
+RewriteRule ^Category category.php [NE,L]
+RewriteRule ^Product product.php [NE,L]
+RewriteRule ^Stock stock.php [NE,L]
+RewriteRule ^Primary-Stock primary_stock.php [NE,L]
+RewriteRule ^Shop-Stock shop_stock.php [NE,L]
+RewriteRule ^Profile profile.php [NE,L]
+RewriteRule ^Customer customer.php [NE,L]
+RewriteRule ^Invoice invoice.php [NE,L]
+RewriteRule ^Print_Invoice print_invoice.php [NE,L]
+RewriteRule ^Return-Products return_product.php [NE,L]
