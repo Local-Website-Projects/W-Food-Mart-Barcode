@@ -229,6 +229,7 @@ if (isset($_GET['update'])) {
                                     <th>Transfer Quantity</th>
                                     <th>Remaining Stock</th>
                                     <th>Stock In Date</th>
+                                    <th>BarCode</th>
                                     <th>Action</th>
                                 </tr>
                                 </thead>
@@ -256,7 +257,8 @@ if (isset($_GET['update'])) {
                                         <td><?php $dateString = $fetch_stock[$i]['date'];
                                             $timestamp = strtotime($dateString);
                                             $formattedDate = date('d M, Y', $timestamp);
-                                            echo $formattedDate;; ?></td>
+                                            echo $formattedDate; ?></td>
+                                        <td><a href="<?php echo $fetch_stock[$i]['barcode'];?>" target="_blank"><img src="<?php echo $fetch_stock[$i]['barcode'];?>" </a></td>
                                         <td class="text-right">
                                             <a href="Stock?edit=<?php echo $fetch_stock[$i]['p_stock_id']; ?>"
                                                class="btn btn-sm btn-soft-success btn-circle me-2"><i
