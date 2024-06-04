@@ -1,5 +1,6 @@
 <?php
 session_start();
+require('vendor/autoload.php');
 require_once('config/dbConfig.php');
 $db_handle = new DBController();
 date_default_timezone_set("Asia/Dhaka");
@@ -94,7 +95,7 @@ if (isset($_POST['edit_primary_stock'])) {
     $buying_cost = $db_handle->checkValue($_POST['buying_cost']);
     $selling_cost = $db_handle->checkValue($_POST['selling_cost']);
 
-    $update_primary_stock = $db_handle->insertQuery("UPDATE `primary_stock` SET `quantity`='$quantity',`buying_cost`='$buying_cost',`selling_cost`='$selling_cost',`updated_at`='$updated_at' WHERE `p_stock_id` = '$p_stock_id'");
+    $update_primary_stock = $db_handle->insertQuery("UPDATE `primary_stock` SET `quantity`='$quantity',`buying_cost`='$buying_cost',`selling_cost`='$selling_cost', `updated_at`='$updated_at' WHERE `p_stock_id` = '$p_stock_id'");
     if($update_primary_stock){
         echo "
         <script>
@@ -165,6 +166,86 @@ if(isset($_POST['edit_customer'])){
         <script>
         document.cookie = 'alert = 5;';
         window.location.href='Customer';
+</script>
+        ";
+    }
+}
+
+
+if(isset($_POST['update_shop_stock'])){
+    $shop_stock_id = $db_handle->checkValue($_POST['shop_stock_id']);
+    $selling_cost = $db_handle->checkValue($_POST['selling_cost']);
+    $unique_id = $db_handle->checkValue($_POST['unique_id']);
+
+    $fetch_product_name = $db_handle->runQuery("select * from product, shop_stock where shop_stock.product=product.product_id and shop_stock.shop_stock_id='$shop_stock_id'");
+    $product_name = $fetch_product_name[0]['product_name'];
+    unlink($fetch_product_name[0]['barcode']);
+    $redColor = [0, 0, 0];
+    $generator = new Picqer\Barcode\BarcodeGeneratorJPG();
+    $barcode = $generator->getBarcode($unique_id, $generator::TYPE_CODE_128, 2, 50, $redColor);
+    $barcodeFile = 'assets/barcode/' . $unique_id . '.jpg';
+
+// Save barcode image to a file
+    file_put_contents($barcodeFile, $barcode);
+
+// Load the barcode image
+    $barcodeImage = imagecreatefromjpeg($barcodeFile);
+
+// Get dimensions of the barcode image
+    $barcodeWidth = imagesx($barcodeImage);
+    $barcodeHeight = imagesy($barcodeImage);
+
+// Create a new image canvas with extra space for text at top, bottom, and padding on sides
+    $padding = 30; // Padding on left and right
+    $canvasHeight = $barcodeHeight + 60; // Extra space for text
+    $canvasWidth = $barcodeWidth + $padding * 2; // Extra space for text and padding
+    $canvas = imagecreatetruecolor($canvasWidth, $canvasHeight);
+
+// Allocate colors
+    $white = imagecolorallocate($canvas, 255, 255, 255);
+    $black = imagecolorallocate($canvas, 0, 0, 0);
+
+// Fill the canvas with white background
+    imagefill($canvas, 0, 0, $white);
+
+// Copy the barcode image onto the canvas
+    imagecopy($canvas, $barcodeImage, $padding, 30, 0, 0, $barcodeWidth, $barcodeHeight);
+
+// Set font size
+    $fontSize = 4;
+
+// Calculate text positions
+    $nameX = ($canvasWidth - imagefontwidth($fontSize) * strlen($product_name)) / 2;
+    $nameY = 10;
+    $bottomText = $unique_id . ' | ' . $selling_cost . ' BDT+VAT';
+    $bottomTextX = ($canvasWidth - imagefontwidth($fontSize) * strlen($bottomText)) / 2;
+    $bottomTextY = $barcodeHeight + 40;
+
+// Add text to the canvas
+    imagestring($canvas, $fontSize, $nameX, $nameY, $product_name, $black);
+    imagestring($canvas, $fontSize, $bottomTextX, $bottomTextY, $bottomText, $black);
+
+// Save the final image
+    imagejpeg($canvas, $barcodeFile);
+
+// Free memory
+    imagedestroy($barcodeImage);
+    imagedestroy($canvas);
+
+
+    $update_shop_stock = $db_handle->insertQuery("UPDATE `shop_stock` SET `selling_price`='$selling_cost',`barcode`='$barcodeFile',`unique_id`='$unique_id',`updated_at`='$updated_at' WHERE shop_stock_id = '$shop_stock_id'");
+    if($update_shop_stock){
+        echo "
+        <script>
+        document.cookie = 'alert = 4;';
+        window.location.href='Shop-Stock';
+</script>
+        ";
+    } else {
+        echo "
+        <script>
+        document.cookie = 'alert = 5;';
+        window.location.href='Shop-Stock';
 </script>
         ";
     }

@@ -77,7 +77,7 @@ $u = '';
                                                         style="width: 100%; height:36px;">
                                                     <option>Select</option>
                                                     <?php
-                                                    $fetch_product = $db_handle->runQuery("SELECT shop_stock.quantity,shop_stock.shop_stock_id, product.product_code, primary_stock.selling_cost, product.product_id, primary_stock.p_stock_id FROM `shop_stock`, primary_stock, product WHERE shop_stock.stock_id = primary_stock.p_stock_id AND primary_stock.product_id = product.product_id AND shop_stock.quantity > 0 and shop_stock.status = 1");
+                                                    $fetch_product = $db_handle->runQuery("SELECT shop_stock.quantity,shop_stock.shop_stock_id, product.product_code, shop_stock.selling_price, product.product_id, primary_stock.p_stock_id FROM `shop_stock`, primary_stock, product WHERE shop_stock.stock_id = primary_stock.p_stock_id AND primary_stock.product_id = product.product_id AND shop_stock.quantity > 0 and shop_stock.status = 1");
                                                     for ($i = 0; $i < count($fetch_product); $i++) {
                                                         ?>
                                                         <option value="<?php echo $fetch_product[$i]['shop_stock_id'];?>"><?php echo $fetch_product[$i]['product_code']; ?>

@@ -67,83 +67,10 @@ if (isset($_POST['add_primary_stock'])) {
 $product_id = $db_handle->checkValue($_POST['product_id']);
 $stock_in_quantity = $db_handle->checkValue($_POST['stock_in_quantity']);
 $purchase_price = $db_handle->checkValue($_POST['purchase_price']);
-$selling_price = $db_handle->checkValue($_POST['selling_price']);
 $stock_in_date = $db_handle->checkValue($_POST['stock_in_date']);
 
-function generate_unique_id()
-{
-    $db_handle = new DBController();
-    $id = '';
-    for ($i = 0; $i < 8; $i++) {
-        $id .= rand(0, 9);
-    }
-    $check_id = $db_handle->runQuery("SELECT * FROM primary_stock WHERE stock_unique_id = '$id'");
-    if (isset($check_id[0]['stock_unique_id'])) {
-        return generate_unique_id();
-    } else {
-        return $id;
-    }
-}
-
-// Generate the ID
-$unique_id = generate_unique_id();
-$fetch_product = $db_handle->runQuery("SELECT product_name FROM product WHERE product_id='$product_id'");
-$product_name = $fetch_product[0]['product_name'];
-$redColor = [0, 0, 0];
-$generator = new Picqer\Barcode\BarcodeGeneratorJPG();
-$barcode = $generator->getBarcode($unique_id, $generator::TYPE_CODE_128, 2, 50, $redColor);
-$barcodeFile = 'assets/barcode/' . $unique_id . '.jpg';
-
-// Save barcode image to a file
-file_put_contents($barcodeFile, $barcode);
-
-// Load the barcode image
-$barcodeImage = imagecreatefromjpeg($barcodeFile);
-
-// Get dimensions of the barcode image
-$barcodeWidth = imagesx($barcodeImage);
-$barcodeHeight = imagesy($barcodeImage);
-
-// Create a new image canvas with extra space for text at top, bottom, and padding on sides
-$padding = 30; // Padding on left and right
-$canvasHeight = $barcodeHeight + 60; // Extra space for text
-$canvasWidth = $barcodeWidth + $padding * 2; // Extra space for text and padding
-$canvas = imagecreatetruecolor($canvasWidth, $canvasHeight);
-
-// Allocate colors
-$white = imagecolorallocate($canvas, 255, 255, 255);
-$black = imagecolorallocate($canvas, 0, 0, 0);
-
-// Fill the canvas with white background
-imagefill($canvas, 0, 0, $white);
-
-// Copy the barcode image onto the canvas
-imagecopy($canvas, $barcodeImage, $padding, 30, 0, 0, $barcodeWidth, $barcodeHeight);
-
-// Set font size
-$fontSize = 4;
-
-// Calculate text positions
-$nameX = ($canvasWidth - imagefontwidth($fontSize) * strlen($product_name)) / 2;
-$nameY = 10;
-$bottomText = $unique_id . ' | ' . $selling_price . ' BDT+VAT';
-$bottomTextX = ($canvasWidth - imagefontwidth($fontSize) * strlen($bottomText)) / 2;
-$bottomTextY = $barcodeHeight + 40;
-
-// Add text to the canvas
-imagestring($canvas, $fontSize, $nameX, $nameY, $product_name, $black);
-imagestring($canvas, $fontSize, $bottomTextX, $bottomTextY, $bottomText, $black);
-
-// Save the final image
-imagejpeg($canvas, $barcodeFile);
-
-// Free memory
-imagedestroy($barcodeImage);
-imagedestroy($canvas);
-
-
 // Add primary stock and store the barcode file path
-$add_primary_stock = $db_handle->insertQuery("INSERT INTO `primary_stock`(`product_id`, `quantity`, `buying_cost`, `selling_cost`, `date`, `inserted_at`, `stock_unique_id`, `barcode`) VALUES ('$product_id','$stock_in_quantity','$purchase_price','$selling_price','$stock_in_date','$inserted_at','$unique_id','$barcodeFile')");
+$add_primary_stock = $db_handle->insertQuery("INSERT INTO `primary_stock`(`product_id`, `quantity`, `buying_cost`, `date`, `inserted_at`) VALUES ('$product_id','$stock_in_quantity','$purchase_price','$stock_in_date','$inserted_at')");
 
 if ($add_primary_stock) {
     echo "
@@ -166,8 +93,83 @@ if ($add_primary_stock) {
 if (isset($_POST['transfer_primary_stock'])) {
     $stock_id = $db_handle->checkValue($_POST['stock_id']);
     $transfer_quantity = $db_handle->checkValue($_POST['transfer_quantity']);
+    $selling_cost = $db_handle->checkValue($_POST['selling_cost']);
 
-    $transfer_to_shop = $db_handle->insertQuery("INSERT INTO `shop_stock`(`stock_id`, `quantity`, `date`, `inserted_at`) VALUES ('$stock_id','$transfer_quantity','$today','$inserted_at')");
+    $fetch_product_name = $db_handle->runQuery("select product_name,product.product_id from primary_stock,product where primary_stock.product_id=product.product_id AND primary_stock.p_stock_id = '$stock_id'");
+    $product_name = $fetch_product_name[0]['product_name'];
+    $product_id = $fetch_product_name[0]['product_id'];
+    function generate_unique_id()
+    {
+        $db_handle = new DBController();
+        $id = '';
+        for ($i = 0; $i < 8; $i++) {
+            $id .= rand(0, 9);
+        }
+        $check_id = $db_handle->runQuery("SELECT * FROM shop_stock WHERE unique_id = '$id'");
+        if (isset($check_id[0]['stock_unique_id'])) {
+            return generate_unique_id();
+        } else {
+            return $id;
+        }
+    }
+
+// Generate the ID
+    $unique_id = generate_unique_id();
+    $fetch_product = $db_handle->runQuery("SELECT product_name FROM product WHERE product_id='$product_id'");
+    $product_name = $fetch_product[0]['product_name'];
+    $redColor = [0, 0, 0];
+    $generator = new Picqer\Barcode\BarcodeGeneratorJPG();
+    $barcode = $generator->getBarcode($unique_id, $generator::TYPE_CODE_128, 2, 50, $redColor);
+    $barcodeFile = 'assets/barcode/' . $unique_id . '.jpg';
+
+// Save barcode image to a file
+    file_put_contents($barcodeFile, $barcode);
+
+// Load the barcode image
+    $barcodeImage = imagecreatefromjpeg($barcodeFile);
+
+// Get dimensions of the barcode image
+    $barcodeWidth = imagesx($barcodeImage);
+    $barcodeHeight = imagesy($barcodeImage);
+
+// Create a new image canvas with extra space for text at top, bottom, and padding on sides
+    $padding = 30; // Padding on left and right
+    $canvasHeight = $barcodeHeight + 60; // Extra space for text
+    $canvasWidth = $barcodeWidth + $padding * 2; // Extra space for text and padding
+    $canvas = imagecreatetruecolor($canvasWidth, $canvasHeight);
+
+// Allocate colors
+    $white = imagecolorallocate($canvas, 255, 255, 255);
+    $black = imagecolorallocate($canvas, 0, 0, 0);
+
+// Fill the canvas with white background
+    imagefill($canvas, 0, 0, $white);
+
+// Copy the barcode image onto the canvas
+    imagecopy($canvas, $barcodeImage, $padding, 30, 0, 0, $barcodeWidth, $barcodeHeight);
+
+// Set font size
+    $fontSize = 4;
+
+// Calculate text positions
+    $nameX = ($canvasWidth - imagefontwidth($fontSize) * strlen($product_name)) / 2;
+    $nameY = 10;
+    $bottomText = $unique_id . ' | ' . $selling_cost . ' BDT+VAT';
+    $bottomTextX = ($canvasWidth - imagefontwidth($fontSize) * strlen($bottomText)) / 2;
+    $bottomTextY = $barcodeHeight + 40;
+
+// Add text to the canvas
+    imagestring($canvas, $fontSize, $nameX, $nameY, $product_name, $black);
+    imagestring($canvas, $fontSize, $bottomTextX, $bottomTextY, $bottomText, $black);
+
+// Save the final image
+    imagejpeg($canvas, $barcodeFile);
+
+// Free memory
+    imagedestroy($barcodeImage);
+    imagedestroy($canvas);
+
+    $transfer_to_shop = $db_handle->insertQuery("INSERT INTO `shop_stock`(`stock_id`, `quantity`, `date`, `barcode`, `unique_id`, `inserted_at`,`selling_price`,`product`) VALUES ('$stock_id','$transfer_quantity','$today','$barcodeFile','$unique_id','$inserted_at','$selling_cost','$product_id')");
     if ($transfer_to_shop) {
         echo "
         <script>
@@ -184,6 +186,7 @@ if (isset($_POST['transfer_primary_stock'])) {
         ";
     }
 }
+
 
 
 if (isset($_POST['add_customer'])) {

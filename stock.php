@@ -137,7 +137,7 @@ if (isset($_GET['update'])) {
                         $remains = $stock_in;
                     }
                     ?>
-                    <input type="hidden" value="<?php echo $_GET['transfer']; ?>" name="stock_id">
+                    <input type="hidden" value="<?php echo $_GET['transfer']; ?>" name="shop_stock_id">
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="availableStock" value="<?php echo $remains;?>" required readonly>
                         <label for="availableStock">Stock Available for Transfer</label>
@@ -147,6 +147,10 @@ if (isset($_GET['update'])) {
                         <input type="text" class="form-control" id="transferQuantity" name="transfer_quantity" required>
                         <label for="transferQuantity">Transfer Quantity</label>
                         <span id="quantityError" style="color: red; display: none;">Transfer quantity cannot exceed available stock.</span>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="transferQuantity" name="selling_cost" required>
+                        <label for="transferQuantity">Selling Cost</label>
                     </div>
 
                     <button type="submit" id="transferButton" name="transfer_primary_stock" class="btn btn-primary">Transfer To Shop</button>
@@ -190,11 +194,6 @@ if (isset($_GET['update'])) {
                                         <label for="floatingInput">Purchase Price</label>
                                     </div>
                                     <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="floatingInput" name="selling_price"
-                                               required>
-                                        <label for="floatingInput">Selling Price</label>
-                                    </div>
-                                    <div class="form-floating mb-3">
                                         <input type="date" class="form-control" id="floatingInput" name="stock_in_date"
                                                required>
                                         <label for="floatingInput">Stock In Date</label>
@@ -229,7 +228,6 @@ if (isset($_GET['update'])) {
                                     <th>Transfer Quantity</th>
                                     <th>Remaining Stock</th>
                                     <th>Stock In Date</th>
-                                    <th>BarCode</th>
                                     <th>Action</th>
                                 </tr>
                                 </thead>
@@ -258,7 +256,6 @@ if (isset($_GET['update'])) {
                                             $timestamp = strtotime($dateString);
                                             $formattedDate = date('d M, Y', $timestamp);
                                             echo $formattedDate; ?></td>
-                                        <td><a href="<?php echo $fetch_stock[$i]['barcode'];?>" target="_blank"><img src="<?php echo $fetch_stock[$i]['barcode'];?>" </a></td>
                                         <td class="text-right">
                                             <a href="Stock?edit=<?php echo $fetch_stock[$i]['p_stock_id']; ?>"
                                                class="btn btn-sm btn-soft-success btn-circle me-2"><i
