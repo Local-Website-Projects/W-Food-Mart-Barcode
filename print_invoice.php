@@ -34,10 +34,11 @@ if(isset($_GET['id'])){
     <style>
         .main {
             background: #eee;
-            width: 288px;
+            width: 100%;
         }
         .company_name{
-            font-size: 14px;
+            font-size: 48px;
+            font-weight: bold;
         }
         table {
             width: 90%;
@@ -46,14 +47,14 @@ if(isset($_GET['id'])){
             border: 1px solid black;
         }
         th {
-            font-size: 10px;
+            font-size: 40px;
         }
         td {
-            font-size: 10px;
+            font-size: 40px;
             color: black;
         }
         p{
-            font-size: 8px;
+            font-size: 32px;
         }
     </style>
 </head>
@@ -64,9 +65,12 @@ if(isset($_GET['id'])){
             <div class="main">
                 <div class="row">
                     <div class="col-12 mt-5">
-                        <h3 class="company_name">Food Mart</h3>
-                        <h3 class="company_name">16 KDA Avenue, Khulna</h3>
-                        <h3 class="company_name">Invoice: INV-<?php echo $id;?></h3>
+                        <h3 class="company_name">********************************************</h3>
+                        <h3 class="company_name">INVOICE</h3>
+                        <h3 class="company_name">********************************************</h3>
+                        <h3 class="company_name mt-5">Food Mart</h3>
+                        <h3 style="font-size: 30px">16 KDA Avenue, Khulna</h3>
+                        <h3 class="company_name">INV-<?php echo $id;?></h3>
                     </div>
                     <div class="col-12 d-flex align-items-center justify-content-center">
                         <table class="mb-5">
@@ -110,10 +114,15 @@ if(isset($_GET['id'])){
                             </tr>
                             <tr>
                                 <td colspan="3">Total</td>
-                                <td><?php echo $fetch_invoice_details[0]['grand_total'];?></td>
+                                <td><b><?php echo $fetch_invoice_details[0]['grand_total'];?></b></td>
                             </tr>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+                <div class="row mt-3 mb-3 text-center">
+                    <div class="col-12">
+                        <p style="font-size: 40px;">*** Thanks for shopping with us. ***</p>
                     </div>
                 </div>
                 <div class="row">
@@ -121,7 +130,7 @@ if(isset($_GET['id'])){
                         <p>Printed On: <?php echo $today;?></p>
                     </div>
                     <div class="col-6">
-                        <p>Developed With: FrogBid</p>
+                        <p style="font-size: 24px">Developed With: FrogBid</p>
                     </div>
                 </div>
             </div>

@@ -65,7 +65,10 @@ if(!isset($_SESSION['admin'])){
                                             <p class="text-dark mb-0 fw-semibold">Daily Sell</p>
                                             <h3 class="m-0"><?php
                                                 $fetch_today_sell = $db_handle->runQuery("SELECT SUM(total_price) AS total FROM invoice_product WHERE DATE(inserted_at) = CURDATE();");
-                                                echo $fetch_today_sell[0]['total'];
+                                                if($fetch_today_sell[0]['total'] != 0)
+                                                    echo $fetch_today_sell[0]['total'];
+                                                else
+                                                    echo '00';
                                                 ?>
                                                 BDT</h3>
                                             <p class="mb-0 text-truncate text-muted"><span class="text-success"><i
@@ -90,7 +93,10 @@ if(!isset($_SESSION['admin'])){
                                             <p class="text-dark mb-0 fw-semibold">Monthly Sell</p>
                                             <h3 class="m-0"><?php
                                                 $fetch_monthly_sell = $db_handle->runQuery("SELECT SUM(total_price) AS total FROM invoice_product WHERE YEAR(inserted_at) = YEAR(CURDATE()) AND MONTH(inserted_at) = MONTH(CURDATE())");
-                                                echo $fetch_today_sell[0]['total'];
+                                                if($fetch_monthly_sell[0]['total'] != 0)
+                                                    echo $fetch_monthly_sell[0]['total'];
+                                                else
+                                                    echo '00';
                                                 ?> BDT</h3>
                                             <p class="mb-0 text-truncate text-muted"><span class="text-success"><i
                                                             class="mdi mdi-trending-up"></i></span> Currently Monthly

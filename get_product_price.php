@@ -12,10 +12,12 @@ if(!isset($_SESSION['admin'])){
 }
 $stock_id = $_POST['stockId'];
 
-$fetch_primary_stock_id = $db_handle->runQuery("select * from shop_stock where shop_stock_id = '$stock_id'");
+$fetch_primary_stock_id = $db_handle->runQuery("select * from shop_stock,product where unique_id = '$stock_id' and shop_stock.product = product.product_id");
 
-
-$check = $db_handle->runQuery("SELECT selling_cost FROM `primary_stock` where p_stock_id = '{$fetch_primary_stock_id[0]['stock_id']}'");
-if($check){
-    echo $check[0]['selling_cost'];
+if($fetch_primary_stock_id){
+    $response = array(
+        'selling_price' => $fetch_primary_stock_id[0]['selling_price'],
+        'product_name' => $fetch_primary_stock_id[0]['product_name']
+    );
+    echo json_encode($response);
 }

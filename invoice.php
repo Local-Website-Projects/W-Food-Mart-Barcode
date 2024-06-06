@@ -63,7 +63,8 @@ $u = '';
                                     <table class="table mb-0">
                                         <thead>
                                         <tr>
-                                            <th class="border-top-0">Product</th>
+                                            <th class="border-top-0">Barcode</th>
+                                            <th class="border-top-0">Product Name</th>
                                             <th class="border-top-0">Price</th>
                                             <th class="border-top-0">Quantity</th>
                                             <th class="border-top-0">Total</th>
@@ -77,15 +78,18 @@ $u = '';
                                                         style="width: 100%; height:36px;">
                                                     <option>Select</option>
                                                     <?php
-                                                    $fetch_product = $db_handle->runQuery("SELECT shop_stock.quantity,shop_stock.shop_stock_id, product.product_code, shop_stock.selling_price, product.product_id, primary_stock.p_stock_id FROM `shop_stock`, primary_stock, product WHERE shop_stock.stock_id = primary_stock.p_stock_id AND primary_stock.product_id = product.product_id AND shop_stock.quantity > 0 and shop_stock.status = 1");
+                                                    $fetch_product = $db_handle->runQuery("SELECT shop_stock.quantity,shop_stock.unique_id,shop_stock.shop_stock_id, product.product_code, shop_stock.selling_price, product.product_id, primary_stock.p_stock_id FROM `shop_stock`, primary_stock, product WHERE shop_stock.stock_id = primary_stock.p_stock_id AND primary_stock.product_id = product.product_id AND shop_stock.quantity > 0 and shop_stock.status = 1");
                                                     for ($i = 0; $i < count($fetch_product); $i++) {
                                                         ?>
-                                                        <option value="<?php echo $fetch_product[$i]['shop_stock_id'];?>"><?php echo $fetch_product[$i]['product_code']; ?>
-                                                            - <?php echo $fetch_product[$i]['quantity']; ?></option>
+                                                        <option value="<?php echo $fetch_product[$i]['unique_id'];?>"><?php echo $fetch_product[$i]['unique_id']; ?></option>
                                                         <?php
                                                     }
                                                     ?>
                                                 </select>
+                                            </td>
+                                            <td>
+                                                <input class="productName form-control form-control-sm w-25"
+                                                       type="text" name="product_name[]" required readonly>
                                             </td>
                                             <td>
                                                 <input class="productPrice form-control form-control-sm w-25"
@@ -187,12 +191,15 @@ $u = '';
             row.find('.productSelect').change(function() {
                 var stockId = $(this).val();
                 var productPriceInput = $(this).closest('tr').find('.productPrice');
+                var productNameInput = $(this).closest('tr').find('.productName');
                 $.ajax({
                     type: 'POST',
                     url: 'get_product_price.php',
                     data: {stockId: stockId},
                     success: function(response) {
-                        productPriceInput.val(response);
+                        var data = JSON.parse(response);
+                        productPriceInput.val(data.selling_price);
+                        productNameInput.val(data.product_name); // Assuming you have a productNameInput defined
                         calculate(productPriceInput); // Recalculate total in case quantity was already set
                         updateGrandTotal();
                     }

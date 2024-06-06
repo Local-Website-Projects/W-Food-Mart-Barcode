@@ -64,34 +64,34 @@ if (isset($_POST['add_product'])) {
 
 
 if (isset($_POST['add_primary_stock'])) {
-$product_id = $db_handle->checkValue($_POST['product_id']);
-$stock_in_quantity = $db_handle->checkValue($_POST['stock_in_quantity']);
-$purchase_price = $db_handle->checkValue($_POST['purchase_price']);
-$stock_in_date = $db_handle->checkValue($_POST['stock_in_date']);
+    $product_id = $db_handle->checkValue($_POST['product_id']);
+    $stock_in_quantity = $db_handle->checkValue($_POST['stock_in_quantity']);
+    $purchase_price = $db_handle->checkValue($_POST['purchase_price']);
+    $stock_in_date = $db_handle->checkValue($_POST['stock_in_date']);
 
 // Add primary stock and store the barcode file path
-$add_primary_stock = $db_handle->insertQuery("INSERT INTO `primary_stock`(`product_id`, `quantity`, `buying_cost`, `date`, `inserted_at`) VALUES ('$product_id','$stock_in_quantity','$purchase_price','$stock_in_date','$inserted_at')");
+    $add_primary_stock = $db_handle->insertQuery("INSERT INTO `primary_stock`(`product_id`, `quantity`, `buying_cost`, `date`, `inserted_at`) VALUES ('$product_id','$stock_in_quantity','$purchase_price','$stock_in_date','$inserted_at')");
 
-if ($add_primary_stock) {
-    echo "
+    if ($add_primary_stock) {
+        echo "
     <script>
     document.cookie = 'alert = 4;';
     window.location.href='Stock';
     </script>
     ";
-} else {
-    echo "
+    } else {
+        echo "
     <script>
     document.cookie = 'alert = 5;';
     window.location.href='Stock';
     </script>
     ";
-}
+    }
 }
 
 
 if (isset($_POST['transfer_primary_stock'])) {
-    $stock_id = $db_handle->checkValue($_POST['stock_id']);
+    $stock_id = $db_handle->checkValue($_POST['shop_stock_id']);
     $transfer_quantity = $db_handle->checkValue($_POST['transfer_quantity']);
     $selling_cost = $db_handle->checkValue($_POST['selling_cost']);
 
@@ -134,7 +134,7 @@ if (isset($_POST['transfer_primary_stock'])) {
 
 // Create a new image canvas with extra space for text at top, bottom, and padding on sides
     $padding = 30; // Padding on left and right
-    $canvasHeight = $barcodeHeight + 60; // Extra space for text
+    $canvasHeight = $barcodeHeight + 100; // Extra space for text and barcode
     $canvasWidth = $barcodeWidth + $padding * 2; // Extra space for text and padding
     $canvas = imagecreatetruecolor($canvasWidth, $canvasHeight);
 
@@ -145,20 +145,27 @@ if (isset($_POST['transfer_primary_stock'])) {
 // Fill the canvas with white background
     imagefill($canvas, 0, 0, $white);
 
+// Calculate the vertical center for the barcode
+    $barcodeY = ($canvasHeight - $barcodeHeight) / 2;
+
 // Copy the barcode image onto the canvas
-    imagecopy($canvas, $barcodeImage, $padding, 30, 0, 0, $barcodeWidth, $barcodeHeight);
+    imagecopy($canvas, $barcodeImage, $padding, $barcodeY, 0, 0, $barcodeWidth, $barcodeHeight);
 
 // Set font size
     $fontSize = 4;
 
 // Calculate text positions
     $nameX = ($canvasWidth - imagefontwidth($fontSize) * strlen($product_name)) / 2;
-    $nameY = 10;
+    $nameY = 30;
+    $topText = "FoodMart";
+    $topTextX = ($canvasWidth - imagefontwidth($fontSize) * strlen($topText)) / 2;
+    $topTextY = 10;
     $bottomText = $unique_id . ' | ' . $selling_cost . ' BDT+VAT';
     $bottomTextX = ($canvasWidth - imagefontwidth($fontSize) * strlen($bottomText)) / 2;
-    $bottomTextY = $barcodeHeight + 40;
+    $bottomTextY = $canvasHeight - 40;
 
 // Add text to the canvas
+    imagestring($canvas, $fontSize, $topTextX, $topTextY, $topText, $black); // Add top text
     imagestring($canvas, $fontSize, $nameX, $nameY, $product_name, $black);
     imagestring($canvas, $fontSize, $bottomTextX, $bottomTextY, $bottomText, $black);
 
@@ -168,6 +175,9 @@ if (isset($_POST['transfer_primary_stock'])) {
 // Free memory
     imagedestroy($barcodeImage);
     imagedestroy($canvas);
+
+
+
 
     $transfer_to_shop = $db_handle->insertQuery("INSERT INTO `shop_stock`(`stock_id`, `quantity`, `date`, `barcode`, `unique_id`, `inserted_at`,`selling_price`,`product`) VALUES ('$stock_id','$transfer_quantity','$today','$barcodeFile','$unique_id','$inserted_at','$selling_cost','$product_id')");
     if ($transfer_to_shop) {
@@ -236,7 +246,7 @@ if (isset($_POST['add_invoice'])) {
         $quantity = $quantities[$i];
         $total = $subtotals[$i];
 
-        $product_fetch = $db_handle->runQuery("select * from shop_stock where shop_stock_id='$shop_stock'");
+        $product_fetch = $db_handle->runQuery("select * from shop_stock where unique_id='$shop_stock'");
         $product = $product_fetch[0]['stock_id'];
 
         $fetch_product_code = $db_handle->runQuery("select product_id from primary_stock where p_stock_id='$product'");
