@@ -65,7 +65,7 @@ if(!isset($_SESSION['admin'])){
                                             <p class="text-dark mb-0 fw-semibold">Daily Sell</p>
                                             <h3 class="m-0"><?php
                                                 $fetch_today_sell = $db_handle->runQuery("SELECT SUM(total_price) AS total FROM invoice_product WHERE DATE(inserted_at) = CURDATE();");
-                                                if($fetch_today_sell[0]['total'] != 0)
+                                                if($fetch_today_sell[0]['total'] != NULL)
                                                     echo $fetch_today_sell[0]['total'];
                                                 else
                                                     echo '00';
@@ -93,7 +93,7 @@ if(!isset($_SESSION['admin'])){
                                             <p class="text-dark mb-0 fw-semibold">Monthly Sell</p>
                                             <h3 class="m-0"><?php
                                                 $fetch_monthly_sell = $db_handle->runQuery("SELECT SUM(total_price) AS total FROM invoice_product WHERE YEAR(inserted_at) = YEAR(CURDATE()) AND MONTH(inserted_at) = MONTH(CURDATE())");
-                                                if($fetch_monthly_sell[0]['total'] != 0)
+                                                if($fetch_monthly_sell[0]['total'] != NULL)
                                                     echo $fetch_monthly_sell[0]['total'];
                                                 else
                                                     echo '00';

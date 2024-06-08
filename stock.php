@@ -198,6 +198,11 @@ if (isset($_GET['update'])) {
                                                required>
                                         <label for="floatingInput">Stock In Date</label>
                                     </div>
+                                    <div class="form-floating mb-3">
+                                        <input type="date" class="form-control" id="floatingInput" name="expire_date"
+                                               required>
+                                        <label for="floatingInput">Expire Date</label>
+                                    </div>
                                     <button type="submit" name="add_primary_stock" class="btn btn-primary mt-3">Submit
                                     </button>
                                 </form>
@@ -223,11 +228,12 @@ if (isset($_GET['update'])) {
                                 <tr>
                                     <th>Sl No</th>
                                     <th>Product Name</th>
-                                    <th>Product Code</th>
                                     <th>Stock In Quantity</th>
                                     <th>Transfer Quantity</th>
                                     <th>Remaining Stock</th>
                                     <th>Stock In Date</th>
+                                    <th>Expire Date</th>
+                                    <th>Status</th>
                                     <th>Action</th>
                                 </tr>
                                 </thead>
@@ -240,7 +246,6 @@ if (isset($_GET['update'])) {
                                     <tr>
                                         <td><?php echo $i + 1; ?></td>
                                         <td><?php echo $fetch_stock[$i]['product_name']; ?></td>
-                                        <td><?php echo $fetch_stock[$i]['product_code']; ?></td>
                                         <td><?php echo $fetch_stock[$i]['quantity']; ?></td>
                                         <?php
                                         $transfer = $db_handle->runQuery("select SUM(quantity) as qty from shop_stock where stock_id = {$fetch_stock[$i]['p_stock_id']}");
@@ -256,6 +261,44 @@ if (isset($_GET['update'])) {
                                             $timestamp = strtotime($dateString);
                                             $formattedDate = date('d M, Y', $timestamp);
                                             echo $formattedDate; ?></td>
+                                        <td><?php $dateString = $fetch_stock[$i]['expire_date'];
+                                            $timestamp = strtotime($dateString);
+                                            $formattedDate = date('d M, Y', $timestamp);
+                                            echo $formattedDate; ?></td>
+                                        <td>
+                                            <?php
+                                            // Get the current date
+                                            $current_date = new DateTime();
+
+                                            // Create a DateTime object for the expiry date
+                                            $expiry_date = new DateTime($fetch_stock[$i]['expire_date']);
+
+                                            // Calculate the difference between the current date and the expiry date
+                                            $interval = $current_date->diff($expiry_date);
+
+                                            // Get the difference in days
+                                            $days_difference = $interval->days;
+
+                                            // If expiry date is in the past, make the difference negative
+                                            if ($expiry_date < $current_date) {
+                                                 $days_difference = -$days_difference;
+                                            }
+                                            if($days_difference <= 30 && $days_difference > 0){
+                                                ?>
+                                                <span class="badge badge-boxed  badge-outline-warning">Almost Expired</span>
+                                                <?php
+                                            } elseif ($days_difference <= 0){
+                                                ?>
+                                                <span class="badge badge-boxed  badge-outline-danger">Expired</span>
+                                                <?php
+                                            } else {
+                                                ?>
+                                                <span class="badge badge-boxed  badge-outline-success">Valid</span>
+                                                <?php
+                                            }
+
+                                            ?>
+                                        </td>
                                         <td class="text-right">
                                             <a href="Stock?edit=<?php echo $fetch_stock[$i]['p_stock_id']; ?>"
                                                class="btn btn-sm btn-soft-success btn-circle me-2"><i

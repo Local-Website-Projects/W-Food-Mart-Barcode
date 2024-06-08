@@ -68,9 +68,10 @@ if (isset($_POST['add_primary_stock'])) {
     $stock_in_quantity = $db_handle->checkValue($_POST['stock_in_quantity']);
     $purchase_price = $db_handle->checkValue($_POST['purchase_price']);
     $stock_in_date = $db_handle->checkValue($_POST['stock_in_date']);
+    $expire_date = $db_handle->checkValue($_POST['expire_date']);
 
 // Add primary stock and store the barcode file path
-    $add_primary_stock = $db_handle->insertQuery("INSERT INTO `primary_stock`(`product_id`, `quantity`, `buying_cost`, `date`, `inserted_at`) VALUES ('$product_id','$stock_in_quantity','$purchase_price','$stock_in_date','$inserted_at')");
+    $add_primary_stock = $db_handle->insertQuery("INSERT INTO `primary_stock`(`product_id`, `quantity`, `buying_cost`, `date`, `inserted_at`,`expire_date`) VALUES ('$product_id','$stock_in_quantity','$purchase_price','$stock_in_date','$inserted_at','$expire_date')");
 
     if ($add_primary_stock) {
         echo "
@@ -262,7 +263,10 @@ if (isset($_POST['add_invoice'])) {
     $subtotal = $db_handle->checkValue($_POST['subtotal']);
     $discount = $db_handle->checkValue($_POST['discount']);
     $grand_total = $db_handle->checkValue($_POST['grand_total']);
-    $insert_invoice = $db_handle->insertQuery("INSERT INTO `invoice_data`(`invoice_id`, `customer_id`, `sub_total`, `grand_total`, `discount`, `inserted_at`) VALUES ('$invoice_id','$customer','$subtotal','$grand_total','$discount','$inserted_at')");
+    $receive_amount = $db_handle->checkValue($_POST['receive_amount']);
+    $return_amount = $db_handle->checkValue($_POST['return_amount']);
+    $payment_method = $db_handle->checkValue($_POST['payment_method']);
+    $insert_invoice = $db_handle->insertQuery("INSERT INTO `invoice_data`(`invoice_id`, `customer_id`, `sub_total`, `grand_total`, `discount`, `inserted_at`,`receive_amount`,`return_amount`,`payment_method`) VALUES ('$invoice_id','$customer','$subtotal','$grand_total','$discount','$inserted_at','$receive_amount','$return_amount','$payment_method')");
     if ($insert_invoice) {
         echo "<script>
 alert ('Invoice Created Successfully');

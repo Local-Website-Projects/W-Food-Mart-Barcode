@@ -74,14 +74,15 @@ $u = '';
                                         <tbody id="productRows">
                                         <tr class="productRow">
                                             <td>
-                                                <select class="productSelect select2 form-control mb-3 custom-select" name="shop_stock[]" required
+                                                <select class="productSelect select2 form-control mb-3 custom-select"
+                                                        name="shop_stock[]" required
                                                         style="width: 100%; height:36px;">
                                                     <option>Select</option>
                                                     <?php
                                                     $fetch_product = $db_handle->runQuery("SELECT shop_stock.quantity,shop_stock.unique_id,shop_stock.shop_stock_id, product.product_code, shop_stock.selling_price, product.product_id, primary_stock.p_stock_id FROM `shop_stock`, primary_stock, product WHERE shop_stock.stock_id = primary_stock.p_stock_id AND primary_stock.product_id = product.product_id AND shop_stock.quantity > 0 and shop_stock.status = 1");
                                                     for ($i = 0; $i < count($fetch_product); $i++) {
                                                         ?>
-                                                        <option value="<?php echo $fetch_product[$i]['unique_id'];?>"><?php echo $fetch_product[$i]['unique_id']; ?></option>
+                                                        <option value="<?php echo $fetch_product[$i]['unique_id']; ?>"><?php echo $fetch_product[$i]['unique_id']; ?></option>
                                                         <?php
                                                     }
                                                     ?>
@@ -100,7 +101,8 @@ $u = '';
                                                        value="0" onchange="calculate(this);" required name="quantity[]">
                                             </td>
                                             <td>
-                                                <input class="product_total form-control form-control-sm w-25" type="text" value="0" name="sub_total[]" required step="0.01">
+                                                <input class="product_total form-control form-control-sm w-25"
+                                                       type="text" value="0" name="sub_total[]" required step="0.01">
                                             </td>
                                             <td>
                                                 <a href="#" class="text-dark addRow"><i
@@ -117,39 +119,79 @@ $u = '';
                                     <div class="col-md-6">
                                         <div class="total-payment p-3">
                                             <h6 class="header-title font-14">Total Payment</h6>
+                                            <select class="selectCustomer select2 form-control mb-3 custom-select"
+                                                    style="width: 100%; height:36px;" name="customer">
+                                                <option>Select Membership Number</option>
+                                                <?php
+                                                $fetch_member = $db_handle->runQuery("SELECT * FROM `customer_data`");
+                                                for ($i = 0; $i < count($fetch_member); $i++) {
+                                                    ?>
+                                                    <option value="<?php echo $fetch_member[$i]['customer_id']; ?>"><?php echo $fetch_member[$i]['contact_phone']; ?>
+                                                        - <?php echo $fetch_member[$i]['discount_percentage']; ?> %
+                                                    </option>
+                                                    <?php
+                                                }
+                                                ?>
+                                            </select>
+                                            <select class="form-control mt-3 mb-3 custom-select"
+                                                    name="payment_method" required
+                                                    style="width: 100%; height:36px;">
+                                                <option>Select Payment Method</option>
+                                                <option value="Cash">Cash</option>
+                                                <option value="Bkash">Bkash</option>
+                                                <option value="Card">Card</option>
+                                                <option value="Bank Transfer">Bank Transfer</option>
+                                            </select>
                                             <table class="table">
                                                 <tbody>
-                                                <select class="selectCustomer select2 form-control mb-3 custom-select"
-                                                        style="width: 100%; height:36px;" name="customer">
-                                                    <option>Select Membership Number</option>
-                                                    <?php
-                                                    $fetch_member = $db_handle->runQuery("SELECT * FROM `customer_data`");
-                                                    for ($i = 0; $i < count($fetch_member); $i++) {
-                                                        ?>
-                                                        <option value="<?php echo $fetch_member[$i]['customer_id']; ?>"><?php echo $fetch_member[$i]['contact_phone']; ?>
-                                                            - <?php echo $fetch_member[$i]['discount_percentage']; ?> %</option>
-                                                        <?php
-                                                    }
-                                                    ?>
-                                                </select>
                                                 <tr>
                                                     <td class="payment-title">Subtotal</td>
-                                                    <td><input id="grandTotalInput" class="form-control form-control-sm w-25" type="text" value="BDT 0.00" readonly required name="subtotal"></td>
+                                                    <td><input id="grandTotalInput"
+                                                               class="form-control form-control-sm w-25" type="text"
+                                                               value="BDT 0.00" readonly required name="subtotal"></td>
                                                 </tr>
                                                 <tr>
                                                     <td class="payment-title">Discount (%)</td>
-                                                    <td><input class="form-control form-control-sm w-25" type="number" id="discount" required
+                                                    <td><input class="form-control form-control-sm w-25" type="number"
+                                                               id="discount" required
                                                                value="0" name="discount">
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td class="payment-title">Total</td>
-                                                    <td class="text-dark"><strong><input class="form-control form-control-sm w-25" type="text" id="totalAfterDiscount"
-                                                                                         value="0" required name="grand_total"></strong></td>
+                                                    <td class="text-dark">
+                                                        <strong>
+                                                            <input class="form-control form-control-sm w-25" type="text"
+                                                                   id="totalAfterDiscount" value="0" required
+                                                                   name="grand_total">
+                                                        </strong>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="payment-title">Receive Amount</td>
+                                                    <td class="text-dark">
+                                                        <strong>
+                                                            <input class="form-control form-control-sm w-25" type="text"
+                                                                   id="totalReceiveAmount" value="0"
+                                                                   name="receive_amount"
+                                                                   oninput="calculateReturnAmount()">
+                                                        </strong>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="payment-title">Return Amount</td>
+                                                    <td class="text-dark">
+                                                        <strong>
+                                                            <input class="form-control form-control-sm w-25" type="text"
+                                                                   id="returnAmount" value="0"
+                                                                   name="return_amount" readonly>
+                                                        </strong>
+                                                    </td>
                                                 </tr>
                                                 </tbody>
                                             </table>
-                                            <button type="submit" name="add_invoice" class="btn btn-primary">Print Invoice
+                                            <button type="submit" name="add_invoice" class="btn btn-primary">Print
+                                                Invoice
                                             </button>
                                         </div>
                                     </div><!--end col-->
@@ -175,7 +217,19 @@ $u = '';
 <?php include('include/js.php'); ?>
 
 <script>
-    $(document).ready(function() {
+    function calculateReturnAmount() {
+        // Get the values of the total and received amount fields
+        var total = parseFloat(document.getElementById('totalAfterDiscount').value) || 0;
+        var received = parseFloat(document.getElementById('totalReceiveAmount').value) || 0;
+
+        // Calculate the return amount
+        var returnAmount = received - total;
+
+        // Set the return amount field
+        document.getElementById('returnAmount').value = returnAmount.toFixed(2);
+    }
+
+    $(document).ready(function () {
         // Initialize Select2 on existing select elements
         initializeSelect2($('.productSelect'));
         initializeSelect2($('.selectCustomer'));
@@ -188,7 +242,7 @@ $u = '';
             // Initialize Select2 on the new row's select element
             initializeSelect2(row.find('.productSelect'));
 
-            row.find('.productSelect').change(function() {
+            row.find('.productSelect').change(function () {
                 var stockId = $(this).val();
                 var productPriceInput = $(this).closest('tr').find('.productPrice');
                 var productNameInput = $(this).closest('tr').find('.productName');
@@ -196,7 +250,7 @@ $u = '';
                     type: 'POST',
                     url: 'get_product_price.php',
                     data: {stockId: stockId},
-                    success: function(response) {
+                    success: function (response) {
                         var data = JSON.parse(response);
                         productPriceInput.val(data.selling_price);
                         productNameInput.val(data.product_name); // Assuming you have a productNameInput defined
@@ -206,7 +260,7 @@ $u = '';
                 });
             });
 
-            row.find('.addRow').off('click').on('click', function(e) {
+            row.find('.addRow').off('click').on('click', function (e) {
                 e.preventDefault();
                 var newRow = $('.productRow:first').clone(); // Clone the first row
                 newRow.find('.select2-container').remove(); // Remove the Select2 container
@@ -218,7 +272,7 @@ $u = '';
                 initRowEvents(newRow); // Initialize events and Select2 for the new row
             });
 
-            row.find('.removeRow').off('click').on('click', function(e) {
+            row.find('.removeRow').off('click').on('click', function (e) {
                 e.preventDefault();
                 if ($('#productRows .productRow').length > 1) {
                     $(this).closest('tr').remove();
@@ -231,13 +285,13 @@ $u = '';
         initRowEvents($('.productRow'));
 
         // Calculate subtotal and total payment when discount changes
-        $('#discount').on('input', function() {
+        $('#discount').on('input', function () {
             totalAfterDiscount();
         });
 
         // Calculate initial total after discount
         totalAfterDiscount();
-        $('#discount').on('input', function() {
+        $('#discount').on('input', function () {
             totalAfterDiscount(); // Make sure totalAfterDiscount is accessible from here
         });
     });
@@ -260,7 +314,7 @@ $u = '';
 
     function updateGrandTotal() {
         let grandTotal = 0;
-        $('.product_total').each(function() {
+        $('.product_total').each(function () {
             let totalValue = parseFloat($(this).val());
             if (!isNaN(totalValue)) {
                 grandTotal += totalValue;
