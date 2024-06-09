@@ -257,7 +257,7 @@ if (isset($_POST['add_invoice'])) {
         if ($fetch_product_code) {
             $insert_product = $db_handle->insertQuery("INSERT INTO `invoice_product`(`product_code`, `selling_price`, `quantity`, `total_price`, `inserted_at`,`invoice_id`,`discount`) VALUES ('$product_id','$price','$quantity','$total','$inserted_at','$invoice_id','$dis')");
             $new_quantity = $product_fetch[0]['quantity'] - $quantity . '<br>';
-            $update_stock = $db_handle->insertQuery("update shop_stock set sell_quantity='$quantity' where shop_stock_id='$shop_stock'");
+            $update_stock = $db_handle->insertQuery("update shop_stock set sell_quantity='$quantity' where unique_id='$shop_stock'");
         }
 
     }
