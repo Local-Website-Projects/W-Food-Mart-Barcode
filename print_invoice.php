@@ -73,7 +73,8 @@ if(isset($_GET['id'])){
                     <td class="item"><h2>Item</h2></td>
                     <td class="item"><h2>Price</h2></td>
                     <td class="Hours"><h2>Qty</h2></td>
-                    <td class="Rate"><h2>Sub Total</h2></td>
+                    <td class="Hours"><h2>Discount</h2></td>
+                    <td class="Rate"><h2>Sub-Total</h2></td>
                 </tr>
                 <?php
                 $fetch_product = $db_handle->runQuery("select * from invoice_product,product where invoice_id='$id' and invoice_product.product_code = product.product_id");
@@ -83,6 +84,7 @@ if(isset($_GET['id'])){
                         <td  class="tableitem"><p class="itemtext"><?php echo $fetch_product[$i]['product_name'];?></p></td>
                         <td  class="tableitem"><p class="itemtext"><?php echo $fetch_product[$i]['selling_price'];?></p></td>
                         <td  class="tableitem"><p class="itemtext"><?php echo $fetch_product[$i]['quantity'];?></p></td>
+                        <td  class="tableitem"><p class="itemtext"><?php echo $fetch_product[$i]['discount'];?></p></td>
                         <td  class="tableitem"><p class="itemtext"><?php echo $fetch_product[$i]['total_price'];?></p></td>
                     </tr>
                     <?php
@@ -92,31 +94,31 @@ if(isset($_GET['id'])){
 
 
                 <tr class="tabletitle">
-                    <td class="Rate" colspan="3"><h2>Subtotal</h2></td>
+                    <td class="Rate" colspan="4"><h2>Subtotal</h2></td>
                     <td class="payment"><h2><?php echo $fetch_invoice_details[0]['sub_total'];?></h2></td>
                 </tr>
 
                 <tr class="tabletitle">
-                    <td class="Rate" colspan="3"><h2>Discount</h2></td>
+                    <td class="Rate" colspan="4"><h2>Discount</h2></td>
                     <td class="payment"><h2><?php $d = $fetch_invoice_details[0]['discount'];
                             $discount = ($d/100) * $fetch_invoice_details[0]['sub_total'];
                             echo $discount;
                             ?></h2></td>
                 </tr>
                 <tr class="tabletitle">
-                    <td class="Rate" colspan="3"><h2>Vat & Tax</h2></td>
+                    <td class="Rate" colspan="4"><h2>Vat & Tax</h2></td>
                     <td class="payment"><h2>00</h2></td>
                 </tr>
                 <tr class="tabletitle">
-                    <td class="Rate" colspan="3"><h2>Total</h2></td>
+                    <td class="Rate" colspan="4"><h2>Total</h2></td>
                     <td class="payment"><h2><?php echo $fetch_invoice_details[0]['grand_total'];?></h2></td>
                 </tr>
                 <tr class="tabletitle">
-                    <td class="Rate" colspan="3"><h2>Money Received</h2></td>
+                    <td class="Rate" colspan="4"><h2>Money Received</h2></td>
                     <td class="payment"><h2><?php echo $fetch_invoice_details[0]['receive_amount'];?></h2></td>
                 </tr>
                 <tr class="tabletitle">
-                    <td class="Rate" colspan="3"><h2>Money Returned</h2></td>
+                    <td class="Rate" colspan="4"><h2>Money Returned</h2></td>
                     <td class="payment"><h2><?php echo $fetch_invoice_details[0]['return_amount'];?></h2></td>
                 </tr>
 

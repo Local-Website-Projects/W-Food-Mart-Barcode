@@ -227,6 +227,7 @@ if (isset($_POST['add_invoice'])) {
     $prices = $_POST['price'];
     $quantities = $_POST['quantity'];
     $subtotals = $_POST['sub_total'];
+    $discount_products = $_POST['discount_product'];
 
     $invoice_id = substr(md5(uniqid()), 0, 6);
     $check = 0;
@@ -246,6 +247,7 @@ if (isset($_POST['add_invoice'])) {
         $price = $prices[$i];
         $quantity = $quantities[$i];
         $total = $subtotals[$i];
+        $dis = $discount_products[$i];
 
         $product_fetch = $db_handle->runQuery("select * from shop_stock where unique_id='$shop_stock'");
         $product = $product_fetch[0]['stock_id'];
@@ -253,7 +255,7 @@ if (isset($_POST['add_invoice'])) {
         $fetch_product_code = $db_handle->runQuery("select product_id from primary_stock where p_stock_id='$product'");
         $product_id = $fetch_product_code[0]['product_id'];
         if ($fetch_product_code) {
-            $insert_product = $db_handle->insertQuery("INSERT INTO `invoice_product`(`product_code`, `selling_price`, `quantity`, `total_price`, `inserted_at`,`invoice_id`) VALUES ('$product_id','$price','$quantity','$total','$inserted_at','$invoice_id')");
+            $insert_product = $db_handle->insertQuery("INSERT INTO `invoice_product`(`product_code`, `selling_price`, `quantity`, `total_price`, `inserted_at`,`invoice_id`,`discount`) VALUES ('$product_id','$price','$quantity','$total','$inserted_at','$invoice_id','$dis')");
             $new_quantity = $product_fetch[0]['quantity'] - $quantity . '<br>';
             $update_stock = $db_handle->insertQuery("update shop_stock set sell_quantity='$quantity' where shop_stock_id='$shop_stock'");
         }

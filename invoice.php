@@ -67,6 +67,7 @@ $u = '';
                                             <th class="border-top-0">Product Name</th>
                                             <th class="border-top-0">Price</th>
                                             <th class="border-top-0">Quantity</th>
+                                            <th class="border-top-0">Discount</th>
                                             <th class="border-top-0">Total</th>
                                             <th class="border-top-0">Action</th>
                                         </tr>
@@ -98,11 +99,15 @@ $u = '';
                                             </td>
                                             <td>
                                                 <input class="quantity form-control form-control-sm w-25" type="number"
-                                                       value="0" onchange="calculate(this);" required name="quantity[]">
+                                                       value="0" required name="quantity[]">
+                                            </td>
+                                            <td>
+                                                <input class="discount form-control form-control-sm w-25" type="text"
+                                                       value="0" required name="discount_product[]">
                                             </td>
                                             <td>
                                                 <input class="product_total form-control form-control-sm w-25"
-                                                       type="text" value="0" name="sub_total[]" required step="0.01">
+                                                       type="text" value="0" name="sub_total[]" required step="0.01" readonly>
                                             </td>
                                             <td>
                                                 <a href="#" class="text-dark addRow"><i
@@ -217,6 +222,7 @@ $u = '';
 <?php include('include/js.php'); ?>
 
 <script>
+
     function calculateReturnAmount() {
         // Get the values of the total and received amount fields
         var total = parseFloat(document.getElementById('totalAfterDiscount').value) || 0;
@@ -260,6 +266,14 @@ $u = '';
                 });
             });
 
+            row.find('.quantity').on('input', function () {
+                calculate(this); // Calculate total when quantity changes
+            });
+
+            row.find('.discount').on('input', function () {
+                calculate(this); // Calculate total when discount changes
+            });
+
             row.find('.addRow').off('click').on('click', function (e) {
                 e.preventDefault();
                 var newRow = $('.productRow:first').clone(); // Clone the first row
@@ -267,6 +281,7 @@ $u = '';
                 newRow.find('.productSelect').removeClass('select2-hidden-accessible').removeAttr('data-select2-id').val('').show(); // Reset the select element
                 newRow.find('.productPrice').val('0'); // Reset price input value
                 newRow.find('.quantity').val('0'); // Reset quantity input value
+                newRow.find('.discount').val('0'); // Reset discount input value
                 newRow.find('.product_total').val('0'); // Reset the total text
                 newRow.insertAfter('.productRow:last'); // Insert the new row after the last row
                 initRowEvents(newRow); // Initialize events and Select2 for the new row
@@ -291,19 +306,20 @@ $u = '';
 
         // Calculate initial total after discount
         totalAfterDiscount();
-        $('#discount').on('input', function () {
-            totalAfterDiscount(); // Make sure totalAfterDiscount is accessible from here
-        });
     });
 
     function calculate(element) {
         let row = $(element).closest('tr');
         let quantity = row.find('.quantity').val();
-        let productTotal = row.find('.product_total');
         let unitPrice = row.find('.productPrice').val();
+        let discount = row.find('.discount').val();
+        let productTotal = row.find('.product_total');
 
         if (!isNaN(quantity) && quantity > 0 && !isNaN(unitPrice) && unitPrice > 0) {
             let total = quantity * unitPrice;
+            if (!isNaN(discount) && discount > 0) {
+                total -= discount;
+            }
             productTotal.val(total.toFixed(2));
         } else {
             productTotal.val('0');
