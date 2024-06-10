@@ -169,35 +169,37 @@ if (isset($_GET['update'])) {
                                 <tbody>
                                 <?php
                                 $fetch_category = $db_handle->runQuery("select * from category order by category_id desc");
-
-                                for ($i = 0; $i < count($fetch_category); $i++) {
-                                    ?>
-                                    <tr>
-                                        <td><?php echo $i + 1; ?></td>
-                                        <td><?php echo $fetch_category[$i]['category_name']; ?></td>
-                                        <td>
-                                            <?php
-                                            if ($fetch_category[$i]['status'] == 0) {
-                                                ?>
-                                                <span class="badge badge-soft-danger">Deactive</span>
+                                $fetch_category_no = $db_handle->numRows("select * from category order by category_id desc");
+                                if($fetch_category_no > 0) {
+                                    for ($i = 0; $i < count($fetch_category); $i++) {
+                                        ?>
+                                        <tr>
+                                            <td><?php echo $i + 1; ?></td>
+                                            <td><?php echo $fetch_category[$i]['category_name']; ?></td>
+                                            <td>
                                                 <?php
-                                            } elseif ($fetch_category[$i]['status'] == 1) {
+                                                if ($fetch_category[$i]['status'] == 0) {
+                                                    ?>
+                                                    <span class="badge badge-soft-danger">Deactive</span>
+                                                    <?php
+                                                } elseif ($fetch_category[$i]['status'] == 1) {
+                                                    ?>
+                                                    <span class="badge badge-soft-success">Active</span>
+                                                    <?php
+                                                }
                                                 ?>
-                                                <span class="badge badge-soft-success">Active</span>
-                                                <?php
-                                            }
-                                            ?>
-                                        </td>
-                                        <td class="text-right">
-                                            <a href="Category?edit=<?php echo $fetch_category[$i]['category_id']; ?>"
-                                               class="btn btn-sm btn-soft-success btn-circle me-2"><i
-                                                        class="dripicons-pencil"></i></a>
-                                            <a href="Category?update=<?php echo $fetch_category[$i]['category_id'];?>"
-                                               class="btn btn-sm btn-soft-danger btn-circle"><i class="dripicons-anchor"
-                                                                                                aria-hidden="true"></i></a>
-                                        </td>
-                                    </tr>
-                                    <?php
+                                            </td>
+                                            <td class="text-right">
+                                                <a href="Category?edit=<?php echo $fetch_category[$i]['category_id']; ?>"
+                                                   class="btn btn-sm btn-soft-success btn-circle me-2"><i
+                                                            class="dripicons-pencil"></i></a>
+                                                <a href="Category?update=<?php echo $fetch_category[$i]['category_id'];?>"
+                                                   class="btn btn-sm btn-soft-danger btn-circle"><i class="dripicons-anchor"
+                                                                                                    aria-hidden="true"></i></a>
+                                            </td>
+                                        </tr>
+                                        <?php
+                                    }
                                 }
                                 ?>
                                 </tbody>

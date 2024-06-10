@@ -39,7 +39,7 @@ if (isset($_POST['add_category'])) {
 
 if (isset($_POST['add_product'])) {
     $product_name = $db_handle->checkValue($_POST['product_name']);
-    $product_code = $db_handle->checkValue($_POST['product_code']);
+    $product_code = '';
     $product_cat = $db_handle->checkValue($_POST['product_cat']);
     $product_varieties = $db_handle->checkValue($_POST['product_varieties']);
     $company_name = $db_handle->checkValue($_POST['company_name']);

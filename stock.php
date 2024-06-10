@@ -177,7 +177,7 @@ if (isset($_GET['update'])) {
                                             $fetch_code = $db_handle->runQuery("select * from product where status != 0 order by product_name ASC");
                                             for ($i = 0; $i < count($fetch_code); $i++) {
                                                 ?>
-                                                <option value="<?php echo $fetch_code[$i]['product_id']; ?>"><?php echo $fetch_code[$i]['product_code']; ?></option>
+                                                <option value="<?php echo $fetch_code[$i]['product_id']; ?>"><?php echo $fetch_code[$i]['product_name']; ?></option>
                                                 <?php
                                             }
                                             ?>
@@ -240,75 +240,77 @@ if (isset($_GET['update'])) {
                                 <tbody>
                                 <?php
                                 $fetch_stock = $db_handle->runQuery("SELECT * FROM `primary_stock`, `product` WHERE primary_stock.product_id = product.product_id");
-
-                                for ($i = 0; $i < count($fetch_stock); $i++) {
-                                    ?>
-                                    <tr>
-                                        <td><?php echo $i + 1; ?></td>
-                                        <td><?php echo $fetch_stock[$i]['product_name']; ?></td>
-                                        <td><?php echo $fetch_stock[$i]['quantity']; ?></td>
-                                        <?php
-                                        $transfer = $db_handle->runQuery("select SUM(quantity) as qty from shop_stock where stock_id = {$fetch_stock[$i]['p_stock_id']}");
-                                        if($transfer[0]['qty'] != null){
-                                            $t = $transfer[0]['qty'];
-                                        } else {
-                                            $t = 0;
-                                        }
+                                $fetch_stock_no = $db_handle->numRows("SELECT * FROM `primary_stock`, `product` WHERE primary_stock.product_id = product.product_id");
+                                if($fetch_stock_no > 0){
+                                    for ($i = 0; $i < count($fetch_stock); $i++) {
                                         ?>
-                                        <td><?php echo $t;?></td>
-                                        <td><?php echo $fetch_stock[$i]['quantity'] - $t;?></td>
-                                        <td><?php $dateString = $fetch_stock[$i]['date'];
-                                            $timestamp = strtotime($dateString);
-                                            $formattedDate = date('d M, Y', $timestamp);
-                                            echo $formattedDate; ?></td>
-                                        <td><?php $dateString = $fetch_stock[$i]['expire_date'];
-                                            $timestamp = strtotime($dateString);
-                                            $formattedDate = date('d M, Y', $timestamp);
-                                            echo $formattedDate; ?></td>
-                                        <td>
+                                        <tr>
+                                            <td><?php echo $i + 1; ?></td>
+                                            <td><?php echo $fetch_stock[$i]['product_name']; ?></td>
+                                            <td><?php echo $fetch_stock[$i]['quantity']; ?></td>
                                             <?php
-                                            // Get the current date
-                                            $current_date = new DateTime();
-
-                                            // Create a DateTime object for the expiry date
-                                            $expiry_date = new DateTime($fetch_stock[$i]['expire_date']);
-
-                                            // Calculate the difference between the current date and the expiry date
-                                            $interval = $current_date->diff($expiry_date);
-
-                                            // Get the difference in days
-                                            $days_difference = $interval->days;
-
-                                            // If expiry date is in the past, make the difference negative
-                                            if ($expiry_date < $current_date) {
-                                                 $days_difference = -$days_difference;
-                                            }
-                                            if($days_difference <= 30 && $days_difference > 0){
-                                                ?>
-                                                <span class="badge badge-boxed  badge-outline-warning">Almost Expired</span>
-                                                <?php
-                                            } elseif ($days_difference <= 0){
-                                                ?>
-                                                <span class="badge badge-boxed  badge-outline-danger">Expired</span>
-                                                <?php
+                                            $transfer = $db_handle->runQuery("select SUM(quantity) as qty from shop_stock where stock_id = {$fetch_stock[$i]['p_stock_id']}");
+                                            if($transfer[0]['qty'] != null){
+                                                $t = $transfer[0]['qty'];
                                             } else {
-                                                ?>
-                                                <span class="badge badge-boxed  badge-outline-success">Valid</span>
-                                                <?php
+                                                $t = 0;
                                             }
-
                                             ?>
-                                        </td>
-                                        <td class="text-right">
-                                            <a href="Stock?edit=<?php echo $fetch_stock[$i]['p_stock_id']; ?>"
-                                               class="btn btn-sm btn-soft-success btn-circle me-2"><i
-                                                        class="dripicons-pencil"></i></a>
-                                            <a href="Stock?transfer=<?php echo $fetch_stock[$i]['p_stock_id']; ?>"
-                                               class="btn btn-sm btn-soft-success btn-circle me-2"><i
-                                                        class="dripicons-ticket"></i></a>
-                                        </td>
-                                    </tr>
-                                    <?php
+                                            <td><?php echo $t;?></td>
+                                            <td><?php echo $fetch_stock[$i]['quantity'] - $t;?></td>
+                                            <td><?php $dateString = $fetch_stock[$i]['date'];
+                                                $timestamp = strtotime($dateString);
+                                                $formattedDate = date('d M, Y', $timestamp);
+                                                echo $formattedDate; ?></td>
+                                            <td><?php $dateString = $fetch_stock[$i]['expire_date'];
+                                                $timestamp = strtotime($dateString);
+                                                $formattedDate = date('d M, Y', $timestamp);
+                                                echo $formattedDate; ?></td>
+                                            <td>
+                                                <?php
+                                                // Get the current date
+                                                $current_date = new DateTime();
+
+                                                // Create a DateTime object for the expiry date
+                                                $expiry_date = new DateTime($fetch_stock[$i]['expire_date']);
+
+                                                // Calculate the difference between the current date and the expiry date
+                                                $interval = $current_date->diff($expiry_date);
+
+                                                // Get the difference in days
+                                                $days_difference = $interval->days;
+
+                                                // If expiry date is in the past, make the difference negative
+                                                if ($expiry_date < $current_date) {
+                                                    $days_difference = -$days_difference;
+                                                }
+                                                if($days_difference <= 30 && $days_difference > 0){
+                                                    ?>
+                                                    <span class="badge badge-boxed  badge-outline-warning">Almost Expired</span>
+                                                    <?php
+                                                } elseif ($days_difference <= 0){
+                                                    ?>
+                                                    <span class="badge badge-boxed  badge-outline-danger">Expired</span>
+                                                    <?php
+                                                } else {
+                                                    ?>
+                                                    <span class="badge badge-boxed  badge-outline-success">Valid</span>
+                                                    <?php
+                                                }
+
+                                                ?>
+                                            </td>
+                                            <td class="text-right">
+                                                <a href="Stock?edit=<?php echo $fetch_stock[$i]['p_stock_id']; ?>"
+                                                   class="btn btn-sm btn-soft-success btn-circle me-2"><i
+                                                            class="dripicons-pencil"></i></a>
+                                                <a href="Stock?transfer=<?php echo $fetch_stock[$i]['p_stock_id']; ?>"
+                                                   class="btn btn-sm btn-soft-success btn-circle me-2"><i
+                                                            class="dripicons-ticket"></i></a>
+                                            </td>
+                                        </tr>
+                                        <?php
+                                    }
                                 }
                                 ?>
                                 </tbody>

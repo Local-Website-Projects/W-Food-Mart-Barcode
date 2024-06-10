@@ -25,9 +25,17 @@ if(isset($_GET['id'])){
     <meta charset="UTF-8">
     <title>Print Invoice - Food Mart</title>
     <link rel="stylesheet" href="assets/css/invoice.css">
-
+    <style>
+        @media print {
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
+<button class="no-print"><a href="Home">Home</a></button>
+<button class="no-print" id="printButton"><a href="javascript:void(0)">Print</a></button>
 <!-- partial:index.partial.html -->
 <div id="invoice-POS">
 
@@ -134,6 +142,10 @@ if(isset($_GET['id'])){
     </div><!--End InvoiceBot-->
 </div><!--End Invoice-->
 <!-- partial -->
-
+<script>
+    document.getElementById("printButton").addEventListener("click", function() {
+        window.print();
+    });
+</script>
 </body>
 </html>

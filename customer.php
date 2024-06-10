@@ -188,22 +188,24 @@ if (isset($_GET['update'])) {
                                 <tbody>
                                 <?php
                                 $fetch_customer = $db_handle->runQuery("select * from customer_data order by customer_id desc");
-
-                                for ($i = 0; $i < count($fetch_customer); $i++) {
-                                    ?>
-                                    <tr>
-                                        <td><?php echo $i + 1; ?></td>
-                                        <td><?php echo $fetch_customer[$i]['customer_name']; ?></td>
-                                        <td><?php echo $fetch_customer[$i]['contact_phone']; ?></td>
-                                        <td><?php echo $fetch_customer[$i]['total_purchase']; ?></td>
-                                        <td><?php echo $fetch_customer[$i]['discount_percentage']; ?></td>
-                                        <td class="text-right">
-                                            <a href="Customer?edit=<?php echo $fetch_customer[$i]['customer_id']; ?>"
-                                               class="btn btn-sm btn-soft-success btn-circle me-2"><i
-                                                    class="dripicons-pencil"></i></a>
-                                        </td>
-                                    </tr>
-                                    <?php
+                                $fetch_customer_no = $db_handle->numRows("select * from customer_data order by customer_id desc");
+                                if($fetch_customer_no > 0){
+                                    for ($i = 0; $i < count($fetch_customer); $i++) {
+                                        ?>
+                                        <tr>
+                                            <td><?php echo $i + 1; ?></td>
+                                            <td><?php echo $fetch_customer[$i]['customer_name']; ?></td>
+                                            <td><?php echo $fetch_customer[$i]['contact_phone']; ?></td>
+                                            <td><?php echo $fetch_customer[$i]['total_purchase']; ?></td>
+                                            <td><?php echo $fetch_customer[$i]['discount_percentage']; ?></td>
+                                            <td class="text-right">
+                                                <a href="Customer?edit=<?php echo $fetch_customer[$i]['customer_id']; ?>"
+                                                   class="btn btn-sm btn-soft-success btn-circle me-2"><i
+                                                            class="dripicons-pencil"></i></a>
+                                            </td>
+                                        </tr>
+                                        <?php
+                                    }
                                 }
                                 ?>
                                 </tbody>

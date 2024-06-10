@@ -96,12 +96,12 @@ if (isset($_GET['update'])) {
                                                placeholder="Product Name" name="product_name" required>
                                         <label for="floatingInput">Product Name</label>
                                     </div>
-                                    <div class="form-floating mb-3">
+                                    <!--<div class="form-floating mb-3">
                                         <input type="text" class="form-control" id="product_code"
                                                placeholder="Product Code" name="product_code" required>
                                         <label for="floatingInput">Product Code</label>
                                         <span id="code_status" style="color: red; display: none;">This code is already in use.</span>
-                                    </div>
+                                    </div>-->
                                     <div class="form-floating mb-3">
                                         <select class="form-select" id="inputGroupSelect04" aria-label="Example select with button addon" name="product_cat" required>
                                             <option selected disabled>Choose Product Category</option>
@@ -221,7 +221,6 @@ if (isset($_GET['update'])) {
                                 <tr>
                                     <th>Sl No</th>
                                     <th>Product Name</th>
-                                    <th>Product Code</th>
                                     <th>Category Name</th>
                                     <th>Varieties</th>
                                     <th>Company Name</th>
@@ -232,39 +231,40 @@ if (isset($_GET['update'])) {
                                 <tbody>
                                 <?php
                                 $fetch_product = $db_handle->runQuery("select * from category,product where category.category_id = product.cat_id order by product_id DESC");
-
-                                for ($i = 0; $i < count($fetch_product); $i++) {
-                                    ?>
-                                    <tr>
-                                        <td><?php echo $i + 1; ?></td>
-                                        <td><?php echo $fetch_product[$i]['product_name']; ?></td>
-                                        <td><?php echo $fetch_product[$i]['product_code']; ?></td>
-                                        <td><?php echo $fetch_product[$i]['category_name']; ?></td>
-                                        <td><?php echo $fetch_product[$i]['variety']; ?></td>
-                                        <td><?php echo $fetch_product[$i]['company_name']; ?></td>
-                                        <td>
-                                            <?php
-                                            if ($fetch_product[$i]['status'] == 0) {
-                                                ?>
-                                                <span class="badge badge-soft-danger">Deactive</span>
+                                $fetch_product_no = $db_handle->numRows("select * from category,product where category.category_id = product.cat_id order by product_id DESC");
+                                if($fetch_product_no > 0){
+                                    for ($i = 0; $i < count($fetch_product); $i++) {
+                                        ?>
+                                        <tr>
+                                            <td><?php echo $i + 1; ?></td>
+                                            <td><?php echo $fetch_product[$i]['product_name']; ?></td>
+                                            <td><?php echo $fetch_product[$i]['category_name']; ?></td>
+                                            <td><?php echo $fetch_product[$i]['variety']; ?></td>
+                                            <td><?php echo $fetch_product[$i]['company_name']; ?></td>
+                                            <td>
                                                 <?php
-                                            } elseif ($fetch_product[$i]['status'] == 1) {
+                                                if ($fetch_product[$i]['status'] == 0) {
+                                                    ?>
+                                                    <span class="badge badge-soft-danger">Deactive</span>
+                                                    <?php
+                                                } elseif ($fetch_product[$i]['status'] == 1) {
+                                                    ?>
+                                                    <span class="badge badge-soft-success">Active</span>
+                                                    <?php
+                                                }
                                                 ?>
-                                                <span class="badge badge-soft-success">Active</span>
-                                                <?php
-                                            }
-                                            ?>
-                                        </td>
-                                        <td class="text-right">
-                                            <a href="Product?edit=<?php echo $fetch_product[$i]['product_id']; ?>"
-                                               class="btn btn-sm btn-soft-success btn-circle me-2"><i
-                                                        class="dripicons-pencil"></i></a>
-                                            <a href="Product?update=<?php echo $fetch_product[$i]['product_id'];?>"
-                                               class="btn btn-sm btn-soft-danger btn-circle"><i class="dripicons-anchor"
-                                                                                                aria-hidden="true"></i></a>
-                                        </td>
-                                    </tr>
-                                    <?php
+                                            </td>
+                                            <td class="text-right">
+                                                <a href="Product?edit=<?php echo $fetch_product[$i]['product_id']; ?>"
+                                                   class="btn btn-sm btn-soft-success btn-circle me-2"><i
+                                                            class="dripicons-pencil"></i></a>
+                                                <a href="Product?update=<?php echo $fetch_product[$i]['product_id'];?>"
+                                                   class="btn btn-sm btn-soft-danger btn-circle"><i class="dripicons-anchor"
+                                                                                                    aria-hidden="true"></i></a>
+                                            </td>
+                                        </tr>
+                                        <?php
+                                    }
                                 }
                                 ?>
                                 </tbody>
