@@ -34,7 +34,7 @@ if(isset($_GET['id'])){
     </style>
 </head>
 <body>
-<button class="no-print"><a href="Home">Home</a></button>
+<button class="no-print"><a href="Invoice">New</a></button>
 <button class="no-print" id="printButton"><a href="javascript:void(0)">Print</a></button>
 <!-- partial:index.partial.html -->
 <div id="invoice-POS">

@@ -251,11 +251,12 @@ if (isset($_POST['add_invoice'])) {
 
         $product_fetch = $db_handle->runQuery("select * from shop_stock where unique_id='$shop_stock'");
         $product = $product_fetch[0]['stock_id'];
+        $shop_stock_id = $product_fetch[0]['shop_stock_id'];
 
         $fetch_product_code = $db_handle->runQuery("select product_id from primary_stock where p_stock_id='$product'");
         $product_id = $fetch_product_code[0]['product_id'];
         if ($fetch_product_code) {
-            $insert_product = $db_handle->insertQuery("INSERT INTO `invoice_product`(`product_code`, `selling_price`, `quantity`, `total_price`, `inserted_at`,`invoice_id`,`discount`) VALUES ('$product_id','$price','$quantity','$total','$inserted_at','$invoice_id','$dis')");
+            $insert_product = $db_handle->insertQuery("INSERT INTO `invoice_product`(`product_code`, `selling_price`, `quantity`, `total_price`, `inserted_at`,`invoice_id`,`discount`,`shop_stock_id`) VALUES ('$product_id','$price','$quantity','$total','$inserted_at','$invoice_id','$dis','$shop_stock_id')");
             $new_quantity = $product_fetch[0]['quantity'] - $quantity . '<br>';
             $update_stock = $db_handle->insertQuery("update shop_stock set sell_quantity='$quantity' where unique_id='$shop_stock'");
         }
@@ -270,6 +271,13 @@ if (isset($_POST['add_invoice'])) {
     $payment_method = $db_handle->checkValue($_POST['payment_method']);
     $insert_invoice = $db_handle->insertQuery("INSERT INTO `invoice_data`(`invoice_id`, `customer_id`, `sub_total`, `grand_total`, `discount`, `inserted_at`,`receive_amount`,`return_amount`,`payment_method`) VALUES ('$invoice_id','$customer','$subtotal','$grand_total','$discount','$inserted_at','$receive_amount','$return_amount','$payment_method')");
     if ($insert_invoice) {
+        $fetch_customer = $db_handle->runQuery("select * from customer_data where customer_id='$customer'");
+        $fetch_customer_no = $db_handle->numRows("select * from customer_data where customer_id='$customer'");
+        if($fetch_customer_no > 0){
+            $old_purchase = $fetch_customer[0]['total_purchase'];
+            $new_purchase = $old_purchase + $grand_total;
+            $update_customer = $db_handle->insertQuery("UPDATE customer_data set total_purchase='$new_purchase' where customer_id='$customer'");
+        }
         echo "<script>
 alert ('Invoice Created Successfully');
 window.location.href = 'Print_Invoice?id=$invoice_id';
