@@ -45,6 +45,9 @@
             <li>
                 <a href="Return-Products"><i data-feather="droplet" class="align-self-center menu-icon"></i><span>Return Products</span></a>
             </li>
+            <li>
+                <a href="Report-Invoice"><i data-feather="airplay" class="align-self-center menu-icon"></i><span>Invoice Reports</span></a>
+            </li>
         </ul>
     </div>
 </div>

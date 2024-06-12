@@ -228,7 +228,9 @@ if (isset($_GET['update'])) {
 
 <!-- jQuery  -->
 <?php include('include/js.php'); ?>
+<script>
 
+</script>
 </body>
 
 </html>
