@@ -26,9 +26,10 @@
     line-height: 2em;
 }
 #invoice-POS p {
-    font-size: 0.7em;
-    color: #666;
+    font-size: 0.9em;
+    color: #000;
     line-height: 1.2em;
+    font-weight: bold;
 }
 #invoice-POS #top, #invoice-POS #mid, #invoice-POS #bot {
     /* Targets all id with 'col-' */
@@ -73,7 +74,7 @@
 }
 #invoice-POS .tabletitle {
     font-size: 0.5em;
-    background: #EEE;
+    background: rgb(255, 255, 255);
 }
 #invoice-POS .service {
     border-bottom: 1px solid #EEE;

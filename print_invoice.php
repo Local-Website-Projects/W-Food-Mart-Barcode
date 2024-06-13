@@ -42,8 +42,8 @@ if(isset($_GET['id'])){
     <center id="top">
         <div class="logo"></div>
         <div class="info">
-            <h2>Food Mart</h2>
-            <h2 style="font-size: 1em">16 KDA Avenue, Khulna</h2>
+            <h2>Daily Bazar</h2>
+            <h2 style="font-size: 1em">Khulna Road Bokchor, Jashore</h2>
             <h2 style="font-size: 1em">Printed On: <?php echo $today;?></h2>
         </div><!--End Info-->
     </center><!--End InvoiceTop-->

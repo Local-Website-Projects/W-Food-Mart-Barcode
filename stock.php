@@ -106,12 +106,6 @@ if (isset($_GET['update'])) {
                                                required>
                                         <label for="floatingInput">Stock In Price</label>
                                     </div>
-                                    <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="floatingInput"
-                                               value="<?php echo $stock_data[0]['selling_cost']; ?>" name="selling_cost"
-                                               required>
-                                        <label for="floatingInput">Selling Cost</label>
-                                    </div>
                                     <button type="submit" name="edit_primary_stock" class="btn btn-primary">Edit
                                         Stock Data
                                     </button>
@@ -172,12 +166,12 @@ if (isset($_GET['update'])) {
                                         <select class="select2 form-control mb-3 custom-select" name="product_id"
                                                 required
                                                 style="width: 100%; height:36px;">
-                                            <option disabled selected>Select Product Code</option>
+                                            <option disabled selected>Select Product</option>
                                             <?php
                                             $fetch_code = $db_handle->runQuery("select * from product where status != 0 order by product_name ASC");
                                             for ($i = 0; $i < count($fetch_code); $i++) {
                                                 ?>
-                                                <option value="<?php echo $fetch_code[$i]['product_id']; ?>"><?php echo $fetch_code[$i]['product_name']; ?></option>
+                                                <option value="<?php echo $fetch_code[$i]['product_id']; ?>"><?php echo $fetch_code[$i]['product_name']; ?> - <?php echo $fetch_code[$i]['variety'];?></option>
                                                 <?php
                                             }
                                             ?>

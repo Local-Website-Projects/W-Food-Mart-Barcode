@@ -93,9 +93,8 @@ if (isset($_POST['edit_primary_stock'])) {
     $p_stock_id = $db_handle->checkValue($_POST['p_stock_id']);
     $quantity = $db_handle->checkValue($_POST['quantity']);
     $buying_cost = $db_handle->checkValue($_POST['buying_cost']);
-    $selling_cost = $db_handle->checkValue($_POST['selling_cost']);
 
-    $update_primary_stock = $db_handle->insertQuery("UPDATE `primary_stock` SET `quantity`='$quantity',`buying_cost`='$buying_cost',`selling_cost`='$selling_cost', `updated_at`='$updated_at' WHERE `p_stock_id` = '$p_stock_id'");
+    $update_primary_stock = $db_handle->insertQuery("UPDATE `primary_stock` SET `quantity`='$quantity',`buying_cost`='$buying_cost', `updated_at`='$updated_at' WHERE `p_stock_id` = '$p_stock_id'");
     if($update_primary_stock){
         echo "
         <script>
